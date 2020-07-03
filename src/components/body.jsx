@@ -2,9 +2,6 @@ import React, { Component } from "react";
 
 class Body extends Component {
   renderHole(hole, onHammered) {
-    // if (hole.id % 7 === 0)
-    //   return <div key={hole.id + 50} className="board-row"></div>;
-    // else
     return (
       <div key={hole.id} className="square" onClick={() => onHammered(hole)}>
         {hole.value}
@@ -15,7 +12,6 @@ class Body extends Component {
   render() {
     const { hole, onHammered } = this.props;
 
-    // return <div>{hole.map((hole) => this.renderHole(hole, onHammered))}</div>;
     return (
       <div>
         <div className="board-row">

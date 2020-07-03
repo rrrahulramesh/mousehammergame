@@ -30,25 +30,23 @@ class MouseHammer extends Component {
       { id: 23, value: null },
     ],
     currentHole: 0,
+    isGameStarted: false,
     timer: 3000,
     score: 0,
     isHoleSelected: false,
     toggleStop: null,
+    difficultyLevel: [1, 2, 3],
   };
 
-  constructor(props) {
-    super(props);
-    this.initialState = this.state;
-  }
-
   handleHammered = (hole) => {
-    const { score, currentHole, isHoleSelected } = this.state;
-    this.setState({ isHoleSelected: true });
-    if (hole.id === currentHole) {
-      this.setState({ score: score + 5 });
-      console.log("hammered", hole.id);
-    } else this.setState({ score: score - 2 });
-    //else this.setState({ score: score - 2 });
+    const { score, currentHole, isGameStarted, isHoleSelected } = this.state;
+    if (isGameStarted === true) {
+      if (hole.id === currentHole && isHoleSelected === false) {
+        this.setState({ isHoleSelected: true });
+        this.setState({ score: score + 5 });
+        console.log("hammered", hole.id);
+      } else if (hole.id !== currentHole) this.setState({ score: score - 2 });
+    }
   };
 
   randomHoleGenerator = () => {
@@ -60,12 +58,12 @@ class MouseHammer extends Component {
     const random = Math.floor(Math.random() * (max - min) + min);
     currentHole = random;
     this.setState({ currentHole });
+    this.setState({ isHoleSelected: false });
 
     const newValue = <i className="fa fa-android"></i>;
     hole[random].value = newValue;
 
     this.setState({ hole });
-    // console.log(random, currentHole);
 
     hole[random].value = null;
 
@@ -75,25 +73,69 @@ class MouseHammer extends Component {
   };
 
   handleStart = () => {
-    const { timer } = this.state;
-    var toggle;
-    console.log("Game started");
-    toggle = setInterval(() => {
-      this.randomHoleGenerator();
-    }, timer);
-    this.setState({ toggleStop: toggle });
+    const { timer, isGameStarted } = this.state;
+    if (isGameStarted === false) {
+      var toggle;
+      console.log("Game started");
+      this.setState({ isGameStarted: true });
+      toggle = setInterval(() => {
+        this.randomHoleGenerator();
+      }, timer);
+      this.setState({ toggleStop: toggle });
+    }
   };
 
   handleStop = () => {
-    const { toggleStop } = this.state;
-    clearInterval(toggleStop);
-    alert("Your Score is " + this.state.score);
+    const { toggleStop, isGameStarted, score } = this.state;
+    if (isGameStarted === false) alert("You haven't started the game yet!");
+    else {
+      clearInterval(toggleStop);
+      this.setState({ isGameStarted: false });
+      alert("Your Score is " + score);
+      this.setState({ score: 0 });
+    }
+  };
+
+  handleDifficultyLevel = (difficultyLevel) => {
+    const { isGameStarted } = this.state;
+    if (isGameStarted === false) {
+      if (difficultyLevel === 3) this.setState({ timer: 1000 });
+      else if (difficultyLevel === 2) this.setState({ timer: 2000 });
+      else if (difficultyLevel === 1) this.setState({ timer: 3000 });
+    }
   };
 
   render() {
-    const { score } = this.state;
+    const { score, difficultyLevel } = this.state;
     return (
       <div className="grid-container">
+        <h5>Difficulty level</h5>
+        <div className="btn-group" role="group" aria-label="Basic example">
+          <button
+            key={difficultyLevel[0]}
+            type="button"
+            className="btn btn-success"
+            onClick={() => this.handleDifficultyLevel(difficultyLevel[0])}
+          >
+            Easy
+          </button>
+          <button
+            key={difficultyLevel[1]}
+            type="button"
+            className="btn btn-warning"
+            onClick={() => this.handleDifficultyLevel(difficultyLevel[1])}
+          >
+            Medium
+          </button>
+          <button
+            key={difficultyLevel[2]}
+            type="button"
+            className="btn btn-danger"
+            onClick={() => this.handleDifficultyLevel(difficultyLevel[2])}
+          >
+            Hard
+          </button>
+        </div>
         <h1>Score: {score}</h1>
         <button
           className="btn btn-primary btn-primary-spacing"
