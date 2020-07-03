@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Body from "./body";
+import MouseImage from "./mouse.jpg";
 
 class MouseHammer extends Component {
   state = {
@@ -60,7 +61,7 @@ class MouseHammer extends Component {
     this.setState({ currentHole });
     this.setState({ isHoleSelected: false });
 
-    const newValue = <i className="fa fa-android"></i>;
+    const newValue = <img src={MouseImage} width="40" height="30" />;
     hole[random].value = newValue;
 
     this.setState({ hole });
@@ -108,50 +109,52 @@ class MouseHammer extends Component {
   render() {
     const { score, difficultyLevel } = this.state;
     return (
-      <div className="grid-container">
-        <h5>Difficulty level</h5>
-        <div className="btn-group" role="group" aria-label="Basic example">
+      <React.Fragment>
+        <div className="grid-container">
+          <h5>Difficulty level</h5>
+          <div className="btn-group" role="group" aria-label="Basic example">
+            <button
+              key={difficultyLevel[0]}
+              type="button"
+              className="btn btn-success"
+              onClick={() => this.handleDifficultyLevel(difficultyLevel[0])}
+            >
+              Easy
+            </button>
+            <button
+              key={difficultyLevel[1]}
+              type="button"
+              className="btn btn-warning"
+              onClick={() => this.handleDifficultyLevel(difficultyLevel[1])}
+            >
+              Medium
+            </button>
+            <button
+              key={difficultyLevel[2]}
+              type="button"
+              className="btn btn-danger"
+              onClick={() => this.handleDifficultyLevel(difficultyLevel[2])}
+            >
+              Hard
+            </button>
+          </div>
+          <h1>Score: {score}</h1>
           <button
-            key={difficultyLevel[0]}
-            type="button"
-            className="btn btn-success"
-            onClick={() => this.handleDifficultyLevel(difficultyLevel[0])}
+            className="btn btn-primary btn-primary-spacing"
+            onClick={this.handleStart}
           >
-            Easy
+            Start
           </button>
           <button
-            key={difficultyLevel[1]}
-            type="button"
-            className="btn btn-warning"
-            onClick={() => this.handleDifficultyLevel(difficultyLevel[1])}
+            className="btn btn-danger btn-danger-spacing"
+            onClick={this.handleStop}
           >
-            Medium
+            Stop
           </button>
-          <button
-            key={difficultyLevel[2]}
-            type="button"
-            className="btn btn-danger"
-            onClick={() => this.handleDifficultyLevel(difficultyLevel[2])}
-          >
-            Hard
-          </button>
-        </div>
-        <h1>Score: {score}</h1>
-        <button
-          className="btn btn-primary btn-primary-spacing"
-          onClick={this.handleStart}
-        >
-          Start
-        </button>
-        <button
-          className="btn btn-danger btn-danger-spacing"
-          onClick={this.handleStop}
-        >
-          Stop
-        </button>
 
-        <Body hole={this.state.hole} onHammered={this.handleHammered} />
-      </div>
+          <Body hole={this.state.hole} onHammered={this.handleHammered} />
+        </div>
+      </React.Fragment>
     );
   }
 }
